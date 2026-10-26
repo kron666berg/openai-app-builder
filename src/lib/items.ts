@@ -1,5 +1,6 @@
-// Data layer for saved items. Keep all storage access here so accounts,
+// Data layer for saved items. Keep all storage access here so
 // file uploads and semantic search can be added without touching the UI.
+// Rows are scoped to the signed-in user by RLS (owner_id = auth.uid()).
 import { z } from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import type { Tables } from "@/integrations/supabase/types";
