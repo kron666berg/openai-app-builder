@@ -1,4 +1,12 @@
 # Roadmap
-- [x] Enable database
-- [x] Knowledge library: add / list (newest first) / live search / open / edit / delete items
-- [ ] Later: user accounts, file uploads, semantic search
+
+## Auth (in progress)
+- [ ] Enable Google sign-in provider (managed, free)
+- [ ] Migration: items.owner_id default auth.uid(), owner-scoped RLS, remove anon access
+- [ ] /auth page with Google button; move library routes under _authenticated
+- [ ] Header reflects session (sign in / sign out), root onAuthStateChange listener
+- [ ] Verify data isolation with two accounts
+
+## Later
+- Semantic search (Lovable AI)
+- File uploads
