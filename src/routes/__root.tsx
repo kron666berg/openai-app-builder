@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -78,14 +79,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Stash — personal knowledge library" },
+      { name: "description", content: "Save and find useful information in one place." },
+      { property: "og:title", content: "Stash — personal knowledge library" },
+      { property: "og:description", content: "Save and find useful information in one place." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
@@ -120,8 +119,15 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <header className="border-b">
+        <div className="mx-auto flex max-w-2xl items-center px-4 py-3">
+          <Link to="/" className="text-lg font-bold text-primary">Stash</Link>
+        </div>
+      </header>
+      <main className="mx-auto max-w-2xl px-4 py-6">
+        <Outlet />
+      </main>
+      <Toaster />
     </QueryClientProvider>
   );
 }
