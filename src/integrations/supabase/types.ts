@@ -41,6 +41,36 @@ export type Database = {
         }
         Relationships: []
       }
+      items: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          owner_id: string | null
+          title: string
+          updated_at: string
+          url: string | null
+        }
+        Insert: {
+          content?: string
+          created_at?: string
+          id?: string
+          owner_id?: string | null
+          title: string
+          updated_at?: string
+          url?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          owner_id?: string | null
+          title?: string
+          updated_at?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
