@@ -12,7 +12,7 @@ import {
 import { ItemForm } from "@/components/ItemForm";
 import { deleteItem, getItem, itemKeys, updateItem, type ItemInput } from "@/lib/items";
 
-export const Route = createFileRoute("/items/$id")({
+export const Route = createFileRoute("/_authenticated/items/$id")({
   head: () => ({
     meta: [
       { title: "Item — Stash" },
@@ -46,13 +46,13 @@ function ItemPage() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: itemKeys.all });
       toast.success("Deleted");
-      navigate({ to: "/" });
+      navigate({ to: "/library" });
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
   const back = (
-    <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+    <Link to="/library" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
       <ArrowLeft className="h-4 w-4" /> Library
     </Link>
   );

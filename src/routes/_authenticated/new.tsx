@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import { ItemForm } from "@/components/ItemForm";
 import { createItem, itemKeys } from "@/lib/items";
 
-export const Route = createFileRoute("/new")({
+export const Route = createFileRoute("/_authenticated/new")({
   head: () => ({
     meta: [
       { title: "Add item — Stash" },
@@ -24,14 +24,14 @@ function NewItem() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: itemKeys.all });
       toast.success("Saved");
-      navigate({ to: "/" });
+      navigate({ to: "/library" });
     },
     onError: (e: Error) => toast.error(e.message),
   });
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-semibold">Add item</h1>
-      <ItemForm submitLabel="Save" pending={m.isPending} onSubmit={(v) => m.mutate(v)} onCancel={() => navigate({ to: "/" })} />
+      <ItemForm submitLabel="Save" pending={m.isPending} onSubmit={(v) => m.mutate(v)} onCancel={() => navigate({ to: "/library" })} />
     </div>
   );
 }

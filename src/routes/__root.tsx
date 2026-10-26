@@ -1,18 +1,21 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import {
   Outlet,
   Link,
   createRootRouteWithContext,
+  useNavigate,
   useRouter,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { Toaster } from "@/components/ui/sonner";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 function NotFoundComponent() {
   return (
@@ -114,14 +117,55 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function HeaderAuth() {
+  const [email, setEmail] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const qc = useQueryClient();
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setEmail(session?.user?.email ?? null);
+    });
+    return () => subscription.unsubscribe();
+  }, []);
+
+  async function signOut() {
+    await qc.cancelQueries();
+    qc.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  }
+
+  return email ? (
+    <div className="flex items-center gap-3">
+      <span className="max-w-40 truncate text-sm text-muted-foreground">{email}</span>
+      <Button variant="outline" size="sm" onClick={signOut}>Sign out</Button>
+    </div>
+  ) : (
+    <Button asChild variant="outline" size="sm"><Link to="/auth">Sign in</Link></Button>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event) => {
+      if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+      router.invalidate();
+      if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
+    });
+    return () => subscription.unsubscribe();
+  }, [router, queryClient]);
 
   return (
     <QueryClientProvider client={queryClient}>
       <header className="border-b">
-        <div className="mx-auto flex max-w-2xl items-center px-4 py-3">
+        <div className="mx-auto flex max-w-2xl items-center justify-between px-4 py-3">
           <Link to="/" className="text-lg font-bold text-primary">Stash</Link>
+          <HeaderAuth />
         </div>
       </header>
       <main className="mx-auto max-w-2xl px-4 py-6">
