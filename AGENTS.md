@@ -10,6 +10,9 @@
 <!-- LOVABLE:END -->
 
 # Agent rules
-- All saved-item storage access goes through src/lib/items.ts — keeps UI independent so accounts, uploads and semantic search can be swapped in.
-- items table currently allows open (no-login) access only for rows with owner_id NULL — prototype has no accounts; add owner-scoped RLS when auth arrives.
+
+- All saved-item storage access goes through src/lib/items.ts — keeps UI independent so uploads and semantic search can be swapped in.
+- items rows are owned via owner_id (default auth.uid()); RLS policies scope all CRUD to the owner, anon has no grants. Keep every new policy owner-scoped.
+- Library routes live under src/routes/_authenticated/ (managed gate redirects to /auth); only the landing (/) and /auth are public.
+- Google sign-in goes through lovable.auth.signInWithOAuth (managed broker) — never supabase.auth.signInWithOAuth for Google.
 - Search is client-side text filtering (filterItems) — free and simple; replace with server/semantic search later.
